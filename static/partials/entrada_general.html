@@ -1,0 +1,40 @@
+<h3>Reporte de Entrada General</h3>
+<form class="form-horizontal col-lg-6" name="form">
+    <input type="hidden" name="reportunit" data-name="reportUnit" value="/reports/arrimo_reports/entrada_general" />
+    <div class="form-group">
+        <label class="col-lg-4 control-label">Desde</label>
+        <div class="col-lg-8">
+            <div class="input-group date" datepicker>
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                <input class="param form-control date" name="from_date" data-name="from_date" type="text" placeholder="Desde"  />
+            </div>
+
+            <span class="help-block m-b-none">Ingrese la fecha desde la cual desea generar el reporte</span>
+        </div>
+         <label class="col-lg-4 control-label">Hasta</label>
+        <div class="col-lg-8">
+            <div class="input-group date" datepicker>
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                 <input class="param date form-control" name="to_date" data-name="to_date" type="text" placeholder="Hasta"  />
+            </div>
+            <span class="help-block m-b-none">Ingrese la fecha hasta cuando desea generar el reporte</span>
+        </div>
+        <label class="col-lg-4 control-label" for="output">Formato</label>
+        <div class="col-lg-8">
+            <select name="output" data-name="output" id="output" class="param form-control">
+                <option ng-repeat="format in formatList" value="[[ format.value ]]">[[ format.name ]]</option>
+            </select>
+            <span class="help-block m-b-none">Selecione el formato en que desea que se  genere o descargue el reporte</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+            <a class="btn btn-default" ng-click="back()">Atras</a>
+            <button class="btn btn-primary" ng-click="generate()" >Generar</button>
+        </div>
+    </div>
+</form>

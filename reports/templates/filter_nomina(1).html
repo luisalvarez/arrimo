@@ -1,0 +1,12 @@
+
+{% load i18n admin_static cdv_tags %}
+<h3>{% blocktrans with filter_title=title %} By {{ filter_title }} {% endblocktrans %}</h3>
+<form method="GET" action="" class="form-horizontal">
+    <div class="form-group col-lg-12">
+        {{ spec.form.nomber|add_class:'form-control' }}
+    </div>
+    <p class="submit-row">
+        <input type="submit" value="{% trans "Search" %}" class="btn btn-primary">
+        <input type="reset" value="{% trans "Clear" %}" class="btn ">
+    </p>
+</form>

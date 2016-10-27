@@ -1,0 +1,34 @@
+<h3>Reporte de Nomina</h3>
+<form class="form-horizontal col-lg-6" name="form">
+    <input type="hidden" name="reportunit" data-name="reportUnit" value="/reports/arrimo_reports/reporte_de_nomina" />
+    <div class="form-group">
+        <label class="col-lg-4 control-label"># Nómina / Identificador</label>
+        <div class="col-lg-8">
+            <input class="param form-control" name="nomina_id" data-name="nomina_id" type="number" placeholder="# Nómina"  />
+            <span class="help-block m-b-none">Ingrese el número de nómina del cual se desea generar el reporte, puede ser el identificador o el numero</span>
+        </div>
+        <label class="col-lg-4 control-label">Fecha de Pago</label>
+        <div class="col-lg-8">
+            <div class="input-group date" datepicker>
+                <span class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </span>
+                 <input class="param date form-control" name="pay_date" data-name="pay_date" type="text" placeholder="Fecha de Pago"  />
+            </div>
+            <span class="help-block m-b-none">Ingresa la fecha de pago de la nómina, si estas buscando la nomina por su identificador dejala en blanco, de lo contrario buscara por numero de nomina</span>
+        </div>
+        <label class="col-lg-4 control-label" for="output">Formato</label>
+        <div class="col-lg-8">
+            <select name="output" data-name="output" id="output" class="param form-control">
+                <option ng-repeat="format in formatList" value="[[ format.value ]]">[[ format.name ]]</option>
+            </select>
+            <span class="help-block m-b-none">Selecione el formato en que desea que se  genere o descargue el reporte</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+            <a class="btn btn-default" ng-click="back()">Atras</a>
+            <button class="btn btn-primary" ng-click="generate()" >Generar</button>
+        </div>
+    </div>
+</form>

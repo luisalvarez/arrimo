@@ -1,0 +1,96 @@
+{% load cdv_tags %}
+<fieldset class="module aligned {{ fieldset.classes }}">
+    {% if fieldset.name %}<h3 class="m-t-none m-b">{{ fieldset.name }}</h3>{% endif %}
+    <hr/>
+    {% if fieldset.description %}
+        <div class="description">{{ fieldset.description|safe }}</div>
+    {% endif %}
+    {% for line in fieldset %}
+        <div class="form-group form-row{% if line.fields|length_is:'1' and line.errors %} has-error {% endif %}{% if not line.has_visible_field %} hidden{% endif %}{% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
+
+            {% for field in line %}
+                <div {% if not line.fields|length_is:'1' %} class=" field-box {% if field.field.name %} field-{{ field.field.name }} {% endif %} {% if not field.is_readonly and field.errors %} errors {% endif %}{% if field.field.is_hidden %} hidden{% endif %}" {% elif field.is_checkbox %} class="checkbox-row" {% endif %}>
+                    {% if field.is_checkbox %}
+                        <label class="control-label col-sm-2 col-lg-2"></label>
+                        <div class="col-sm-10 col-sm-10">{{ field.field }}{{ field.label_tag }}
+                         {% if field.field.help_text or line.fields|length_is:'1'  %}
+                                    <span class="help-block m-b-none">
+                                        {% if field.field.help_text %}
+                                            {{ field.field.help_text|safe }}
+                                        {% endif %}
+                                        {% if line.fields|length_is:'1' %}
+                                            {{ line.errors }}
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                        </div>
+                    {% else %}
+                        <label class="control-label col-sm-2 col-lg-2 {% if field.field.required %}required{% endif %}"><strong>{{ field.field.label }}</strong>{{ field.required }}</label>
+                        {% if field.is_readonly %}
+                             <div class="col-lg-10 col-sm-10">
+                                <p class="form-control-static" style="margin-left:0;"><strong>{{ field.contents }}</strong></p>
+                                {% if field.field.help_text or line.fields|length_is:'1'  %}
+                                    <span class="help-block m-b-none">
+                                        {% if field.field.help_text %}
+                                            {{ field.field.help_text|safe }}
+                                        {% endif %}
+                                        {% if line.fields|length_is:'1' %}
+                                            {{ line.errors }}
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
+                             </div>
+                        {% elif field|is_radio %}
+                            <div class="col-lg-10 col-sm-10">
+                                {{ field.field }}
+                                {% if line.fields|length_is:'1' %}
+                                      <span class="help-block m-b-none" style="list-style: none;">
+                                    {{ line.errors }}
+                                      </span>
+                                {% endif %}
+                                {% if field.field.help_text %}
+                                    <span class="help-block m-b-none">
+                                        {{ field.field.help_text|safe }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        {% elif field|is_date %}
+                            <div class="col-lg-10 col-sm-10">
+                                <div class="input-group date">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
+                                    {{ field.field|add_class:'form-control date' }}
+                                </div>
+                                {% if line.fields|length_is:'1' %}
+                                      <span class="help-block m-b-none" style="list-style: none;">
+                                    {{ line.errors }}
+                                      </span>
+                                {% endif %}
+                                {% if field.field.help_text %}
+                                    <span class="help-block m-b-none">
+                                        {{ field.field.help_text|safe }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="col-lg-10 col-sm-10">
+                                {{ field.field|add_class:'form-control' }}
+                                {% if line.fields|length_is:'1' %}
+                                      <span class="help-block m-b-none" style="">
+                                    {{ line.errors }}
+                                      </span>
+                                {% endif %}
+                                {% if field.field.help_text %}
+                                    <span class="help-block m-b-none">
+                                        {{ field.field.help_text|safe }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+</fieldset>

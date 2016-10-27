@@ -1,0 +1,307 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_static admin_list cdv_tags admin_modify %}
+
+{% block title %}
+    {{  title }} | {{ site_title|default:_('Django site admin') }}
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+    <!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="{% static "admin/css/ie.css" %}" /><![endif]-->
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+  {{ media.css }}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media.js }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} change-list{% endblock %}
+
+{% if not is_popup %}
+     {% block breadcrumbs %}
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+            </li>
+            <li class="active">
+               <strong> {{ title }} </strong>
+            </li>
+        </ol>
+    {% endblock %}
+{% endif %}
+
+
+{% block object-tools %}
+  {% if has_add_permission %}
+    <div class="object-tools btn-group-vertical">
+        {% block object-tools-items %}
+        {% endblock %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row" >
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    Este es el proceso de registro de llegada de vapores.En este proceso deberá completar la llegada con toda la información, para luego completar la cuadrilla.
+                </div>
+                <div class="ibox-content">
+
+                    <form id="form" action="#" class="wizard-big form-horizontal" ng-controller="RegVapArrCtrl" ng-keyup="keyNav($event.keyCode)">
+
+                 
+					<div class="modal fade"> 
+						<div class="modal-dialog"> 
+							<div class="modal-content"> 
+								<div class="modal-header"> 
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> 
+									<h4 class="modal-title">[[ title_search ]]</h4> 
+								</div> 
+								<div class="modal-body">
+									<div class="panel panel-default" >
+										<div class="row" style="display: block;">
+											<div class="col-xs-12">
+												<div class="input-group c-search">
+													<input type="text" class="form-control" id="fsearch" ng-model="searchstr" ng-change="search()"  >
+													<span class="input-group-addon" >
+													<i class="fa fa-search search"></i>
+													</span>
+												</div>
+											</div>
+									</div>
+									<ul class="list-group" id="contact-list">
+										<li class="list-group-item" ng-repeat="obj in searchResult" >
+											<a href="#set-[[typeSearch]]"  ng-click="set(obj.number)" >
+												 [[obj.number]]/[[obj.name]] 
+											</a>
+										</li>
+									</ul>
+									</div>
+								</div> 
+							</div> 
+						</div> 
+					</div>
+
+                  
+
+					<button type="button" class="btn btn-primary" ng-click="save(false)" ng-disabled="requestPending==1"">Guardar & Calcular</button>
+					<button type="button" class="btn btn-primary" ng-click="cancel()" ng-disabled="requestPending==1"">Cancelar</button>
+					<button type="button" class="btn btn-primary" ng-click="save(true)" ng-disabled="requestPending==1">Guardar, Calcular & Añadir Otro</button>
+
+                        <h4>Llegada de Vapor <a class="btn btn-primary btn-sm" href="#" ng-click="fase=1"><i class="fa fa-plus"></i> </a></h4>
+                        <fieldset class="well" ng-hide="fase != 1">
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 control-label small" style="text-align: left;">#Identificador</label>
+                                        <div class="col-lg-1">
+                                            <input id="nomina" name="nomina" type="number" class="form-control required input-sm" ng-init="arrive.nomina={{ nominna_id }}" ng-model="arrive.nomina" tabindex="1" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small" style="text-align: left;">#Nomina</label>
+                                        <div class="col-lg-1">
+                                            <input id="alternative_number" name="alternative_number" type="number" class="form-control required input-sm" ng-init="arrive.alternative_number={{ nomina_number }}" ng-model="arrive.alternative_number" tabindex="2" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small" >LLegada</label>
+                                        <div class="col-lg-2">
+                                             <div class="input-group date" datepicker>
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                    <input id="llegada" name="llegada" type="text" class="form-control required input-sm" ng-model="arrive.llegada" tabindex="3" required>
+                                            </div>
+                                            <script type="text/javascript">document.getElementById("llegada").focus();</script>
+                                        </div>
+                                        <label class="col-lg-1 control-label small" datepicker>Pagar</label>
+                                        <div class="col-lg-2">
+                                             <div class="input-group date" datepicker>
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-calendar"></i>
+                                                </span>
+                                                <input id="pagar" name="pagar" type="text" class="form-control required input-sm" ng-model="arrive.pagar" ng-init="arrive.pagar='{{pay_date }}'" tabindex="4" required>
+                                             </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1  control-label small">Vapor</label>
+                                        <div class="col-lg-2">
+                                            <div class="input-group" >
+                                                <span class="input-group-addon" ng-click="toggleModal('Buscador Vapores','vapor','cod_vapor')">
+                                                     <i class="fa fa-search search"></i>
+                                                </span>
+                                                <input id="cod_vapor" name="cod_vapor" type="text" class="form-control required input-sm" ng-model="arrive.cod_vapor" tabindex="5" required ng-keyup="autoPopulated('Vapor',$event)"  >
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input id="name_vapor" name="name_vapor" type="text" class="form-control required input-sm "  readonly  tabindex="-1" ng-model="arrive.name_vapor" required >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1  control-label small">Naviera</label>
+                                        <div class="col-lg-2">
+                                            <div class="input-group" >
+                                                <span class="input-group-addon" ng-click="toggleModal('Buscador Navieras','shipping','cod_naviera')">
+                                                     <i class="fa fa-search search"></i>
+                                                </span>
+                                            <input id="cod_naviera"  name="cod_naviera" type="text" class="form-control required input-sm" ng-model="arrive.cod_naviera" tabindex="6" required ng-keyup="autoPopulated('Shipping',$event)"  >
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input id="name_naviera" name="name_naviera" type="text" class="form-control required input-sm" readonly tabindex="-1" ng-model="arrive.name_naviera" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1  control-label small">Inspector</label>
+                                        <div class="col-lg-2">
+                                            <div class="input-group">
+                                                <span class="input-group-addon" ng-click="toggleModal('Buscador Inspector','inspector','cod_inspector')">
+                                                     <i class="fa fa-search search"></i>
+                                                </span>
+                                                <input id="cod_inspector" name="cod_inspector" type="text" class="form-control required input-sm" ng-model="arrive.cod_inspector" tabindex="7" required ng-keyup="autoPopulated('Inspector',$event)"  >
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input id="name_inspector" name="name_inspector" type="text" class="form-control required input-sm" readonly  tabindex="-1" ng-model="arrive.name_inspector" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 control-label small">Directivo</label>
+                                        <div class="col-lg-1">
+											<input id="id_managers" name="directivo" class="form-control required input-sm"  ng-model="arrive.directivo" tabindex="8" required type="number">
+                                             
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <label class="control-label small" for="id_used_yola">¿Usaron yola?</label> 
+											<input id="used_yola" name="used_yola" type="checkbox" ng-model="arrive.used_yola" tabindex="9" required ng-init="checked=false">
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 control-label small">Prestaciones</label>
+                                        <div class="col-lg-2">
+                                            <input id="prestaciones" name="prestaciones" type="number" class="form-control required input-sm" ng-model="arrive.prestaciones" tabindex="10" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Hielo</label>
+                                        <div class="col-lg-2">
+                                            <input id="hielo" name="hielo" type="number" class="form-control required input-sm" ng-model="arrive.hielo"  tabindex="11" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Otros</label>
+                                        <div class="col-lg-2">
+                                            <input id="otros" name="otros" type="number" class="form-control required input-sm" ng-model="arrive.otros" tabindex="12" required>
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 control-label small">Nocivo</label>
+                                        <div class="col-lg-2">
+                                            <input id="nocivo" name="nocivo" type="number" class="form-control required input-sm" ng-model="arrive.nocivo" tabindex="13" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Adicional</label>
+                                        <div class="col-lg-2">
+                                            <input id="adicional" name="adicional" type="number" class="form-control required input-sm" ng-model="arrive.adicional" tabindex="14" required>
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Cheque</label>
+                                        <div class="col-lg-2">
+                                            <input id="cheque" name="cheque" type="number" class="form-control required input-sm" ng-model="arrive.cheque" tabindex="15" required>
+                                            <a href="#"  name="cheque_h" tabindex="15"></a>
+                                        </div>
+                                    </div>
+                                  </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </fieldset>
+                        <h4>Registro de Cuadrilla <a class="btn btn-primary btn-sm" ng-click="fase=2" href="#"><i class="fa fa-plus"></i> </a></h4>
+                        <fieldset class="well" ng-hide="fase != 2">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 small control-label">Miembro</label>
+                                        <div class="col-lg-2">
+                                            <input id="emp" name="emp" type="text" class="form-control required input-sm" ng-model="emp.carnet" ng-keyup="autoPopulated('Employee',$event)" tabindex="1">
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <input id="emp_name" name="emp_name" type="text" class="form-control required input-sm" readonly ng-model="emp.name" tabindex="-1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                 <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="col-lg-1 control-label small">Otros Pagos</label>
+                                        <div class="col-lg-3">
+                                            <input id="otros_pagos" name="otros_pagos" type="number" class="form-control required input-sm" ng-model="emp.otros_pagos" tabindex="2">
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Otras Ded.</label>
+                                        <div class="col-lg-3">
+                                            <input id="otros_deb" name="otros_deb" type="number" class="form-control required input-sm" ng-model="emp.otras_deducciones" tabindex="3">
+                                        </div>
+                                        <label class="col-lg-1 control-label small">Avances</label>
+                                        <div class="col-lg-3">
+                                            <input id="avances" name="avances" type="number" class="form-control required input-sm" ng-model="emp.avance" tabindex="4">
+                                            <a href="#"  name="avances_h" tabindex="5"></a>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </div>
+                            <br/>
+                            <table class="table table-bordered col-lg-12">
+                                <thead>
+                                    <tr>
+                                        <th>No. Carnet</th>
+                                        <th>Nombre Trabajador</th>
+                                        <th>Otros Pagos</th>
+                                        <th>Avances</th>
+                                        <th>Otras Deduc.</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                    <tr ng-repeat="emp in quadrille">
+                                        <td>[[ emp.carnet ]]</td>
+                                        <td>[[ emp.name ]]</td>
+                                        <td>[[ emp.otros_pagos ]]</td>
+                                        <td>[[ emp.avance ]]</td>
+                                        <td>[[ emp.otras_deducciones ]]</td>
+										<td>
+											<a class="btn btn-primary btn-sm" href="#" ng-click="deleteItem(quadrille,$index)"><i class="fa fa-times"></i> </a>
+										</td>
+                                    </tr>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </fieldset>
+                       
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+{% endblock %}
+
+

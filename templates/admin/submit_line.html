@@ -1,0 +1,16 @@
+{% load i18n admin_urls %}
+<div class="row">
+    <div class="col-lg-12 col-lg-offset-1">
+        <div class="form-group ">
+             {% if not is_popup %}<a href="#" onclick="window.history.back(); return false;" class="btn btn-warning">{% trans "Cancelar" %}</a>{% endif %}
+            {% if show_delete_link %}
+                {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+                <a href="{% add_preserved_filters delete_url %}" class="deletelink btn btn-danger ">{% trans "Delete" %}</a>
+            {% endif %}
+            {% if show_save %}<input type="submit" value="Guardar" class="btn " name="_save" />{% endif %}
+            {% if show_save_as_new %}<input type="submit" class="btn " value="Guardar" name="_saveasnew" />{% endif %}
+            {% if show_save_and_add_another %}<input type="submit" class="btn btn-primary" value="Guardar y añadir otro" name="_addanother" />{% endif %}
+            {% if show_save_and_continue %}<input type="submit" class="btn btn-primary" value="Guardar y continuar editando" name="_continue" />{% endif %}
+        </div>
+    </div>
+</div>

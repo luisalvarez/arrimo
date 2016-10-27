@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% load i18n l10n admin_urls %}
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation delete-selected-confirmation{% endblock %}
+
+{% block breadcrumbs %}
+    <ol class="breadcrumb">
+        <li>
+            <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        </li>
+        <li>
+            <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+        </li>
+        <li>
+            <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+        </li>
+        <li class="active">
+            <strong>
+               Proceso de Sustitucion
+            </strong>
+        </li>
+    </ol>
+{% endblock %}
+{% block content %}
+     <div class="ibox float-e-margins">
+        <div class="ibox-content">
+            <div id="content-main">
+                    <p>
+                        <h4>
+                            ¿Está seguro que desea sustituir a este miembro? este se irá al histórico de miembro juntos a
+                            sus datos familiares  y el carnet quedará con información vacía para que sea completado con la nueva.
+                        </h4>
+                        <span><strong>Mienbro a Sustituir:</strong> {{ obj.name }} - {{ obj.licence }}</span>
+
+                    </p>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {% for obj in queryset %}
+                        <input type="hidden" name="{{ action_checkbox_name }}" value="{{ obj.pk|unlocalize }}" />
+                    {% endfor %}
+                    <div>
+                        <input type="hidden" name="action" value="assign_substitute" />
+                        <input type="hidden" name="apply" value="1" />
+                        <input type="submit" value="{% trans "Yes, I'm sure" %}" class="btn-primary btn" />
+                        <a href="#" onclick="window.history.back(); return false;" class="btn btn-danger">{% trans "No, take me back" %}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

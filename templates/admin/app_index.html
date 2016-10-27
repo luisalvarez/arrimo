@@ -1,0 +1,67 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+{% block bodyclass %}
+    {{ block.super }} app-{{ app_label }}
+{% endblock %}
+
+{% if not is_popup %}
+    {% block breadcrumbs %}
+        <ol class="breadcrumb">
+            <li>
+                <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+            </li>
+            <li class="active">
+                {% for app in app_list %}
+                    {{ app.name }}
+                {% endfor %}
+            </li>
+        </ol>
+    {% endblock %}
+{% endif %}
+
+{% block sidebar %}
+<div class="col-lg-3 pull-right">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>{% trans 'Recent Actions' %} <small>{% trans 'My Actions' %}</small></h5>
+        </div>
+        <div class="ibox-content inspinia-timeline">
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+                <p>{% trans 'None available' %}</p>
+            {% else %}
+                {% for entry in admin_log %}
+                     <div class="timeline-item">
+                        <div class="row">
+                            <div class="col-xs-3 date">
+                                <i class="fa {% if entry.is_addition %}fa-plus{% endif %}{% if entry.is_change %}fa-pencil{% endif %}{% if entry.is_deletion %}fa-times{% endif %}">
+                                </i>
+                                <small class="text-navy">{{entry.action_time|date:"M d, Y H:i" }}</small>
+                            </div>
+                            <div class="col-xs-7 content no-top-border">
+                                <p class="m-b-xs">
+                                    <strong>
+                                        {% if entry.content_type %}
+                                            <small>{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</small>
+                                        {% else %}
+                                            {% trans 'Unknown content' %}
+                                        {% endif %}
+                                    </strong>
+                                </p>
+                                <p>
+                                    {% if entry.is_deletion or not entry.get_admin_url %}
+                                        <small>{{ entry.object_repr }}</small>
+                                    {% else %}
+                                        <a href="{{ entry.get_admin_url }}"><small>{{ entry.object_repr }}</small></a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

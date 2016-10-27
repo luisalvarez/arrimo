@@ -1,0 +1,24 @@
+<h3>Reporte de Familiares por Miembro</h3>
+<form class="form-horizontal col-lg-6" name="form">
+    <input type="hidden" name="reportunit" data-name="reportUnit" value="/reports/arrimo_reports/reporte_familiares" />
+    <div class="form-group">
+        <label class="col-lg-4 control-label">Carnet</label>
+        <div class="col-lg-8">
+            <input class="param form-control" name="licence" data-name="licence" type="text" placeholder="Carnet"  />
+            <span class="help-block m-b-none">Carnet del mienbro del que se va generar el reporte</span>
+        </div>
+        <label class="col-lg-4 control-label" for="output">Formato</label>
+        <div class="col-lg-8">
+            <select name="output" data-name="output" id="output" class="param form-control">
+              <option ng-repeat="format in formatList" value="[[ format.value ]]">[[ format.name ]]</option>
+            </select>
+            <span class="help-block m-b-none">Selecione el formato en que desea que se  genere o descargue el reporte</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+            <a class="btn btn-default" ng-click="back()">Atras</a>
+            <button class="btn btn-primary" ng-click="generate()" >Generar</button>
+        </div>
+    </div>
+</form>

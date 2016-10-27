@@ -1,0 +1,97 @@
+
+{% load i18n admin_static cdv_tags %}
+
+{% block extrastyle %}
+
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/login.css" %}"
+          xmlns="http://www.w3.org/1999/html"/>
+    <link href="{% static "admin/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "admin/font-awesome/css/font-awesome.css" %}" rel="stylesheet">
+    <link href="{% static "admin/css/animate.css" %}" rel="stylesheet">
+    <link href="{% static "admin/css/style.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block bodyclass %} {% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="middle-box text-center loginscreen animated fadeInDown">
+
+<!--
+    <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
+      <div class="form-row">
+        {{ form.username.errors }}
+        {{ form.username.label_tag }} {{ form.username }}
+      </div>
+      <div class="form-row">
+        {{ form.password.errors }}
+        {{ form.password.label_tag }} {{ form.password }}
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+
+      {% url 'admin_password_reset' as password_reset_url %}
+      {% if password_reset_url %}
+      <div class="password-reset-link">
+        <a href="{{ password_reset_url }}">{% trans 'Forgotten your password or username?' %}</a>
+      </div>
+      {% endif %}
+      <div class="submit-row">
+        <label>&nbsp;</label><input type="submit" value="{% trans 'Log in' %}" />
+      </div>
+    </form>
+-->
+
+
+    <div>
+        <div>
+            <h1 class="logo-name">AR+</h1>
+        </div>
+        <h3>Welcome to AR+</h3>
+        <p>Bienvenido escriba su usuario y contraseña para ingresar</p>
+
+        {% if form.errors and not form.non_field_errors %}
+            <p class="errornote">
+                {% if form.errors.items|length == 1 %}{% trans "Please correct the error below." %}{% else %}{% trans "Please correct the errors below." %}{% endif %}
+            </p>
+        {% endif %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="errornote">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form class="m-t" role="form" action="{{ app_path }}" method="post" id="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.username.errors }}
+                {{ form.username|add_class:'form-control'}}
+            </div>
+            <div class="form-group">
+                {{ form.password.errors }}
+                {{ form.password |add_class:'form-control'}}
+            </div>
+            <button type="submit" class="btn btn-primary block full-width m-b"> {% trans 'Log in' %} </button>
+            {% url 'admin_password_reset' as password_reset_url %}
+            {% if password_reset_url %}
+                <a href="{{ password_reset_url }}"><small>{% trans 'Forgotten your password or username?' %}</small></a>
+            {% endif %}
+        </form>
+    </div>
+
+
+
+    <script type="text/javascript">
+        document.getElementById('id_username').focus()
+    </script>
+    <!-- Mainly scripts -->
+    <script src="js/jquery-2.1.1.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</div>
+{% endblock %}
